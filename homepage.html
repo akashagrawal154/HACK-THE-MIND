@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteLearn | Learn Without Limits</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1d63ff;
+            --hover-blue: #1652d1;
+            --bg-page: #f8faff;
+            --bg-card: #ffffff;
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            --border: #e5e7eb;
+            --toggle-group: #f1f5f9;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --toggle-group: #334155;
+            --nav-bg: rgba(15, 23, 42, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 8%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(29, 99, 255, 0.3);
+        }
+
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--primary-blue);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .login-link {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .theme-switch {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: var(--toggle-group);
+            border: 2px solid var(--border);
+            color: var(--text-main);
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            text-align: center;
+            padding: 100px 5% 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--toggle-group);
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: var(--primary-blue);
+            font-weight: 900;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            letter-spacing: -2px;
+            background: linear-gradient(90deg, var(--primary-blue), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(29, 99, 255, 0.1);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 18px 35px;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 25px rgba(29, 99, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-blue);
+            background: var(--toggle-group);
+        }
+
+        /* --- Features Grid --- */
+        .features-container {
+            padding: 60px 8% 100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 32px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 30px 60px -12px rgba(29, 99, 255, 0.15);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            background: var(--toggle-group);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            color: var(--primary-blue);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .cta-group { flex-direction: column; padding: 0 20px; }
+            .hero { padding-top: 60px; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+<nav>
+    <a href="#" class="logo-container">
+        <div class="logo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+        </div>
+        <span class="logo-text">Nexo</span>
+    </a>
+    <div class="nav-right">
+        <a href="loginpage.html" class="login-link">Login</a>
+        <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">
+            <span>🌙</span> <span id="themeLabel">Dark</span>
+        </button>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="badge">
+        <span>⚡</span> Fast & Lightweight
+    </div>
+    <h1>Learn Without Limits</h1>
+    <p>Accessible education designed for slow internet connections and low-end devices. Study anytime, anywhere.</p>
+    
+    <div class="cta-group">
+        <a href="signuppage.html" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+            Sign Up
+        </a>
+        <a href="loginpage.html" class="btn btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+            Login
+        </a>
+    </div>
+</section>
+
+<section class="features-container">
+    <div class="feature-card">
+        <div class="icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        </div>
+        <h3>Rich Content</h3>
+        <p>Access notes, courses, and quizzes for all subjects from Class 1 to 12.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        </div>
+        <h3>Ultra Fast</h3>
+        <p>Optimized for 2G/3G networks. Learn even with slow internet connections.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+        </div>
+        <h3>For Everyone</h3>
+        <p>Students learn, teachers upload content. Simple, effective, and collaborative.</p>
+    </div>
+</section>
+
+<script>
+    function toggleTheme() {
+        const body = document.body;
+        const label = document.getElementById('themeLabel');
+        const icon = document.querySelector('.theme-switch span:first-child');
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        
+        if (isDark) {
+            body.setAttribute('data-theme', 'light');
+            label.innerText = 'Dark';
+            icon.innerText = '🌙';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            label.innerText = 'Light';
+            icon.innerText = '☀️';
+        }
+    }
+</script>
+
+</body>
+</html>
