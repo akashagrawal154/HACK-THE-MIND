@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexo | Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-blue: #1d63ff;
+  --bg-page: #f8faff;
+  --bg-card: #ffffff;
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --border: #e5e7eb;
+  --sidebar-width: 260px;
+}
+
+/* ── Dark Mode Variables ── */
+body.dark-mode {
+  --bg-page: #0f1117;
+  --bg-card: #1a1d27;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --border: #2d3142;
+  --primary-blue: #3b82f6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+body { 
+    background: var(--bg-page); 
+    color: var(--text-main); 
+    display: flex; 
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ── Theme Toggle Button ── */
+.theme-icon-btn {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    transition: 0.3s;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.logo-text {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--primary-blue);
+  margin-bottom: 40px;
+  padding-left: 5px;
+  letter-spacing: -0.5px;
+}
+
+.nav-menu { list-style: none; flex: 1; }
+
+.nav-item {
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.2s;
+}
+
+.nav-item:hover, .nav-item.active { background: var(--primary-blue); color: white; }
+
+.btn-logout {
+  margin-top: auto;
+  padding: 12px;
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.main-content { margin-left: var(--sidebar-width); flex: 1; padding: 40px 5%; }
+h2 { font-size: 1.8rem; font-weight: 900; margin-bottom: 6px; }
+.subtitle { color: var(--text-muted); margin-bottom: 28px; }
+
+/* Period Tabs */
+.period-tabs { display: flex; gap: 10px; margin-bottom: 32px; }
+
+.period-tab {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  transition: 0.2s;
+}
+
+.period-tab.active, .period-tab:hover { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+
+/* Big stats */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 18px;
+  margin-bottom: 36px;
+}
+
+.big-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.big-stat:hover { transform: translateY(-4px); }
+
+.big-stat::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: 20px 20px 0 0;
+}
+
+.big-stat.blue::before  { background: var(--primary-blue); }
+.big-stat.green::before { background: #22c55e; }
+.big-stat.purple::before { background: #a855f7; }
+.big-stat.orange::before { background: #f97316; }
+
+.big-stat .value {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--primary-blue);
+  margin: 8px 0 4px;
+}
+
+.big-stat.green .value { color: #22c55e; }
+.big-stat.purple .value { color: #a855f7; }
+.big-stat.orange .value { color: #f97316; }
+
+.big-stat .label { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; }
+
+.big-stat .change {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 6px;
+  color: #16a34a;
+}
+
+.big-stat .emoji-bg {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5rem;
+  opacity: 0.12;
+}
+
+/* Bar Chart */
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 28px;
+  transition: background 0.3s;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.chart-header h3 { font-weight: 900; font-size: 1.1rem; }
+
+.chart-legend { display: flex; gap: 16px; }
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  height: 160px;
+}
+
+.bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bars {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 140px;
+}
+
+.bar {
+  width: 22px;
+  border-radius: 6px 6px 0 0;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.bar:hover { opacity: 0.8; }
+.bar.study { background: var(--primary-blue); }
+.bar.tasks { background: #a5b4fc; }
+
+.bar-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Two col layout */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+/* Course progress */
+.course-progress-list { display: flex; flex-direction: column; gap: 18px; }
+
+.cp-top { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.cp-name { font-weight: 800; font-size: 0.9rem; }
+.cp-pct  { font-weight: 900; font-size: 0.9rem; color: var(--primary-blue); }
+
+.cp-bar {
+  height: 10px;
+  background: var(--bg-page);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.cp-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 1s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* Attendance */
+.attendance-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.att-day {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: white;
+}
+
+.att-day.present  { background: var(--primary-blue); }
+.att-day.absent   { background: #fee2e2; color: #ef4444; }
+.att-day.future   { background: var(--border); color: var(--text-muted); }
+.att-day.today    { background: #111827; }
+body.dark-mode .att-day.today { background: #f3f4f6; color: #111827; }
+
+.attendance-footer { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+
+.att-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.att-legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+@media (max-width: 850px) {
+    .sidebar { display: none; }
+    .main-content { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-text">Nexo</div>
+  <ul class="nav-menu">
+    <li class="nav-item" onclick="goTo('dashboard.html')">🏠 Dashboard</li>
+    <li class="nav-item" onclick="goTo('library.html')">🎧 Library</li>
+    <li class="nav-item active">📊 Analytics</li>
+    <li class="nav-item" onclick="goTo('network.html')">📶 Network</li>
+    <li class="nav-item" onclick="goTo('settingsstudent.html')">⚙️ Settings</li>
+  </ul>
+  <button class="btn-logout" onclick="goTo('homepage.html')">🚪 Logout</button>
+</aside>
+
+<button id="theme-toggle" class="theme-icon-btn" onclick="toggleTheme()">
+    <span id="theme-icon">🌙</span>
+</button>
+
+<main class="main-content">
+  <h2>Analytics 📊</h2>
+  <p class="subtitle">Track your progress and stay on top of your goals.</p>
+
+  <div class="period-tabs">
+    <button class="period-tab active" onclick="setPeriod(this)">This Week</button>
+    <button class="period-tab" onclick="setPeriod(this)">This Month</button>
+    <button class="period-tab" onclick="setPeriod(this)">All Time</button>
+  </div>
+
+  <div class="stat-row">
+    <div class="big-stat blue">
+      <div class="label">Study Hours</div>
+      <div class="value">24.5h</div>
+      <div class="change">↑ 12% vs last week</div>
+      <div class="emoji-bg">📚</div>
+    </div>
+    <div class="big-stat green">
+      <div class="label">Tasks Completed</div>
+      <div class="value">12</div>
+      <div class="change">↑ 3 more than last week</div>
+      <div class="emoji-bg">✅</div>
+    </div>
+    <div class="big-stat purple">
+      <div class="label">Classes Attended</div>
+      <div class="value">8/10</div>
+      <div class="change">80% attendance rate</div>
+      <div class="emoji-bg">🎓</div>
+    </div>
+    <div class="big-stat orange">
+      <div class="label">Avg. Session</div>
+      <div class="value">52m</div>
+      <div class="change">↑ 8 min vs last week</div>
+      <div class="emoji-bg">⏱</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-header">
+      <h3>Study Hours vs Tasks — Daily</h3>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--primary-blue)"></div>Study Hours</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#a5b4fc"></div>Tasks Done</div>
+      </div>
+    </div>
+    <div class="bar-chart" id="barChart"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-card">
+      <h3 style="font-weight:900;font-size:1.05rem;margin-bottom:22px;">Course Progress</h3>
+      <div class="course-progress-list">
+        <div class="cp-item">
+          <div class="cp-top">
+            <span class="cp-name">Advanced Circuit Analysis</span>
+            <span class="cp-pct">65%</span>
+          </div>
+          <div class="cp-bar"><div class="cp-fill" style="width:65%;background:var(--primary-blue)"></div></div>
+        </div>
+        <div class="cp-item">
+          <div class="cp-top">
+            <span class="cp-name">Modern Science & Technology</span>
+            <span class="cp-pct">40%</span>
+          </div>
+          <div class="cp-bar"><div class="cp-fill" style="width:40%;background:#22c55e"></div></div>
+        </div>
+        <div class="cp-item">
+          <div class="cp-top">
+            <span class="cp-name">Thermodynamics</span>
+            <span class="cp-pct">82%</span>
+          </div>
+          <div class="cp-bar"><div class="cp-fill" style="width:82%;background:#a855f7"></div></div>
+        </div>
+        <div class="cp-item">
+          <div class="cp-top">
+            <span class="cp-name">Semiconductor Devices</span>
+            <span class="cp-pct">28%</span>
+          </div>
+          <div class="cp-bar"><div class="cp-fill" style="width:28%;background:#f97316"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3 style="font-weight:900;font-size:1.05rem;margin-bottom:22px;">Attendance — April 2025</h3>
+      <div class="attendance-grid" id="attendanceGrid"></div>
+      <div class="attendance-footer">
+        <div class="att-legend"><div class="att-legend-dot" style="background:var(--primary-blue)"></div>Present</div>
+        <div class="att-legend"><div class="att-legend-dot" style="background:#fee2e2;border:1px solid #fecaca"></div>Absent</div>
+        <div class="att-legend"><div id="today-dot" class="att-legend-dot" style="background:#111827"></div>Today</div>
+        <div class="att-legend"><div class="att-legend-dot" style="background:var(--border)"></div>Upcoming</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function goTo(page) { window.location.href = page; }
+function logout() { localStorage.removeItem("user"); window.location.href = "auth.html"; }
+
+/* ── Theme Logic ── */
+function savePref(key, value) {
+    const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+    prefs[key] = value;
+    localStorage.setItem('nexoPrefs', JSON.stringify(prefs));
+}
+
+function getPref(key, fallback) {
+    const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+    return prefs[key] !== undefined ? prefs[key] : fallback;
+}
+
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+    document.getElementById('today-dot').style.background = isDark ? '#f3f4f6' : '#111827';
+    savePref('darkMode', isDark);
+}
+
+function setPeriod(el) {
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Bar Chart Render
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const studyH = [3.5, 4.0, 2.5, 5.0, 3.0, 4.5, 2.0];
+const tasksD = [2,   3,   1,   4,   2,   3,   1  ];
+const maxH = Math.max(...studyH);
+const maxT = Math.max(...tasksD);
+
+const chart = document.getElementById('barChart');
+days.forEach((d, i) => {
+  const barH = (studyH[i] / maxH) * 120;
+  const barT = (tasksD[i] / maxT) * 120;
+  chart.innerHTML += `
+    <div class="bar-group">
+      <div class="bars">
+        <div class="bar study" style="height:${barH}px"></div>
+        <div class="bar tasks" style="height:${barT}px"></div>
+      </div>
+      <div class="bar-label">${d}</div>
+    </div>`;
+});
+
+// Attendance Grid Render
+const grid = document.getElementById('attendanceGrid');
+const attendance = [1,1,0,1,1,1,0, 1,1,1,0,1,1,0, 1,0,1,1,1,0,0, 1,1,1,1];
+for (let i = 1; i <= 30; i++) {
+  const status = i < 25 ? (attendance[i-1] === 1 ? 'present' : 'absent') : i === 25 ? 'today' : 'future';
+  grid.innerHTML += `<div class="att-day ${status}">${i}</div>`;
+}
+
+// Apply theme on load
+window.addEventListener('DOMContentLoaded', () => {
+    const darkMode = getPref('darkMode', false);
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-icon').textContent = '☀️';
+        document.getElementById('today-dot').style.background = '#f3f4f6';
+    }
+});
+</script>
+</body>
+</html>
