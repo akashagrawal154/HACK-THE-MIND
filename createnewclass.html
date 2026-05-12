@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexo | Establish Classroom Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #f8faff;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent-blue: #2563eb;
+            --accent-blue-faded: rgba(37, 99, 235, 0.08);
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --form-input-bg: #f8faff;
+        }
+
+        body.dark-mode {
+            --bg-body: #0b0f1a;
+            --bg-sidebar: #151b2c;
+            --bg-card: #1e2539;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --accent-blue: #3b82f6;
+            --border: #2d364d;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --form-input-bg: #151b2c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.25s ease, color 0.25s ease, border 0.25s ease; }
+        body { background-color: var(--bg-body); color: var(--text-main); display: flex; min-height: 100vh; }
+
+        /* --- SIDEBAR --- */
+        nav { 
+            width: 280px; background: var(--bg-sidebar); border-right: 1px solid var(--border); 
+            padding: 2.5rem 1.5rem; position: fixed; height: 100vh; display: flex; flex-direction: column; 
+            z-index: 1000;
+        }
+        .logo { color: var(--accent-blue); font-weight: 800; font-size: 1.8rem; margin-bottom: 2.5rem; letter-spacing: -0.5px; padding-left: 0.8rem; }
+        
+        .nav-links { flex-grow: 1; }
+        .nav-link { 
+            padding: 12px 16px; text-decoration: none; color: var(--text-muted); border-radius: 12px; 
+            margin-bottom: 8px; display: flex; align-items: center; gap: 12px; font-weight: 600; 
+        }
+        .nav-link.active { background: var(--accent-blue); color: white; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.25); }
+        .nav-link:hover:not(.active) { background: var(--accent-blue-faded); color: var(--accent-blue); }
+
+        .logout-btn { 
+            background: #fee2e2; color: #ef4444; padding: 12px; border-radius: 12px; 
+            font-weight: 700; text-align: center; text-decoration: none; margin-top: auto; 
+        }
+        body.dark-mode .logout-btn { background: rgba(239, 68, 68, 0.15); }
+
+        /* --- THEME TOGGLE --- */
+        .theme-icon-btn {
+            position: fixed; top: 30px; right: 30px; background: var(--bg-card); border: 1px solid var(--border);
+            width: 48px; height: 48px; border-radius: 14px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; font-size: 1.3rem; z-index: 1100;
+            box-shadow: var(--shadow); outline: none;
+        }
+
+        /* --- MAIN CONTENT --- */
+        main { flex: 1; margin-left: 280px; padding: 2.5rem 3.5rem; }
+        header { margin-bottom: 2.5rem; }
+        header h1 { font-weight: 850; font-size: 2.4rem; letter-spacing: -1.5px; }
+
+        /* --- FORM CARD --- */
+        .form-card { 
+            background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border); 
+            padding: 2.5rem; box-shadow: var(--shadow); max-width: 1000px;
+        }
+
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.8rem; }
+        .input-group { display: flex; flex-direction: column; }
+        
+        label { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px; }
+        
+        input, select, textarea { 
+            background: var(--form-input-bg); border: 1px solid var(--border); 
+            padding: 14px 18px; border-radius: 12px; font-size: 0.95rem; 
+            color: var(--text-main); font-weight: 600; outline: none;
+        }
+        
+        input:focus, select:focus, textarea:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        
+        /* CBSE Subject Tags */
+        .tag-container { 
+            border: 1px solid var(--border); padding: 10px; border-radius: 12px; 
+            display: flex; flex-wrap: wrap; gap: 8px; background: var(--form-input-bg); 
+        }
+        .tag { 
+            background: var(--accent-blue); color: white; padding: 6px 14px; 
+            border-radius: 8px; font-weight: 700; font-size: 0.8rem; 
+            display: flex; align-items: center; gap: 8px; 
+        }
+        .tag i { cursor: pointer; font-size: 0.8rem; opacity: 0.8; }
+        .tag i:hover { opacity: 1; }
+        .tag-input { border: none; padding: 4px; flex: 1; min-width: 120px; background: transparent; font-weight: 600; }
+
+        .hint { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-top: 6px; }
+
+        .form-actions { 
+            display: flex; justify-content: flex-end; gap: 1rem; 
+            margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); 
+        }
+        .btn { padding: 14px 28px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; font-size: 0.9rem; }
+        .btn-cancel { background: transparent; color: var(--text-muted); }
+        .btn-submit { background: var(--accent-blue); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+
+        .time-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+        /* Custom Checkbox for Days */
+        .days-selector { display: flex; gap: 8px; margin-top: 5px; }
+        .day-checkbox { display: none; }
+        .day-label {
+            width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
+            border-radius: 10px; border: 1px solid var(--border); cursor: pointer;
+            font-weight: 800; font-size: 0.85rem; color: var(--text-muted); background: var(--form-input-bg);
+        }
+        .day-checkbox:checked + .day-label { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Nexo</div>
+        <div class="nav-links">
+            <a href="dashboardteacher.html" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
+            <a href="myclasses.html" class="nav-link"><i class="fas fa-layer-group"></i> My Classes</a>
+            <div class="nav-link active"><i class="fas fa-plus-circle"></i> Create New Class</div>
+            <a href="studentlist.html" class="nav-link"><i class="fas fa-user-check"></i> Students</a>
+            <a href="grading.html" class="nav-link"><i class="fas fa-check-double"></i> Grading</a>
+            <a href="settingteacher.html" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+        <a href="homepage.html" class="logout-btn" onclick="return confirm('Exit suite setup?')">Logout</a>
+    </nav>
+
+    <button id="theme-toggle" class="theme-icon-btn" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span>
+    </button>
+
+    <main>
+        <header>
+            <h1>Establish Classroom Suite</h1>
+            <p style="color: var(--text-muted); font-weight: 600; margin-top: 5px;">Define curriculum standards and weekly scheduling.</p>
+        </header>
+
+        <div class="form-card">
+            <form id="createClassForm">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Classroom Identity</label>
+                        <input type="text" placeholder="e.g., Grade 12 - Advanced Calculus" required>
+                    </div>
+                    <div class="input-group">
+                        <label>CBSE Standard / Grade</label>
+                        <select required id="gradeSelect">
+                            <option value="" disabled selected>Choose Level</option>
+                            <option>Grade 9 (Secondary)</option>
+                            <option>Grade 10 (Secondary)</option>
+                            <option>Grade 11 (Science Stream)</option>
+                            <option>Grade 11 (Commerce Stream)</option>
+                            <option>Grade 12 (Science Stream)</option>
+                            <option>Grade 12 (Commerce Stream)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 1.8rem;">
+                    <label>Core Subject Tags (Compliance Tracking)</label>
+                    <div class="tag-container">
+                        <span class="tag">Mathematics Core <i class="fas fa-times"></i></span>
+                        <span class="tag">Physics (NCERT) <i class="fas fa-times"></i></span>
+                        <input type="text" class="tag-input" placeholder="Add subject...">
+                    </div>
+                    <p class="hint" id="cbse-hint">NCERT compliance tags help auto-generate grading rubrics.</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Class Duration (Academic Cycle)</label>
+                        <input type="text" placeholder="e.g., Semester 1 (Apr - Sept)">
+                    </div>
+                    <div class="input-group">
+                        <label>Weekly Schedule</label>
+                        <div class="days-selector">
+                            <input type="checkbox" id="m" class="day-checkbox" checked><label for="m" class="day-label">M</label>
+                            <input type="checkbox" id="t" class="day-checkbox"><label for="t" class="day-label">T</label>
+                            <input type="checkbox" id="w" class="day-checkbox" checked><label for="w" class="day-label">W</label>
+                            <input type="checkbox" id="th" class="day-checkbox"><label for="th" class="day-label">T</label>
+                            <input type="checkbox" id="f" class="day-checkbox" checked><label for="f" class="day-label">F</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Session Timing (IST)</label>
+                        <div class="time-grid">
+                            <input type="time" value="08:30">
+                            <input type="time" value="10:00">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Syllabus Focus</label>
+                        <input type="text" placeholder="e.g., Term 1 Foundation: Algebra & Vectors">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Chapter-wise Breakdown (NCERT Mandatory)</label>
+                    <textarea rows="4" placeholder="List key chapters for tracking progress..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel" onclick="window.history.back()">Discard</button>
+                    <button type="submit" class="btn btn-submit">Save Classroom Suite</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // --- Theme Persistence Logic ---
+        function savePref(key, value) {
+            const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+            prefs[key] = value;
+            localStorage.setItem('nexoPrefs', JSON.stringify(prefs));
+        }
+
+        function getPref(key, fallback) {
+            const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+            return prefs[key] !== undefined ? prefs[key] : fallback;
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+            savePref('darkMode', isDark);
+        }
+
+        // Initialize Theme
+        window.addEventListener('DOMContentLoaded', () => {
+            if (getPref('darkMode', false)) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-icon').textContent = '☀️';
+            }
+        });
+
+        // --- Form Interactivity ---
+        const gradeSelect = document.getElementById('gradeSelect');
+        const hint = document.getElementById('cbse-hint');
+
+        gradeSelect.addEventListener('change', (e) => {
+            if (e.target.value.includes('11') || e.target.value.includes('12')) {
+                hint.innerText = "Senior Secondary subjects selected. Syncing with Stream rubrics.";
+                hint.style.color = "var(--accent-blue)";
+            } else {
+                hint.innerText = "Secondary standard subjects selected. Following NCERT guidelines.";
+                hint.style.color = "var(--text-muted)";
+            }
+        });
+
+        // Basic tag removal
+        document.querySelectorAll('.tag i').forEach(cross => {
+            cross.addEventListener('click', function() {
+                this.parentElement.remove();
+            });
+        });
+
+        document.getElementById('createClassForm').onsubmit = (e) => {
+            e.preventDefault();
+            alert("Classroom Suite Established Successfully!");
+            window.location.href = 'myclasses.html';
+        };
+    </script>
+</body>
+</html>
