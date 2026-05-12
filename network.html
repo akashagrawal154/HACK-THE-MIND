@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexo | Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-blue: #1d63ff;
+  --bg-page: #f8faff;
+  --bg-card: #ffffff;
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --border: #e5e7eb;
+  --sidebar-width: 260px;
+  --net-good: #16a34a;
+  --net-medium: #d97706;
+  --net-poor: #dc2626;
+  --mode-hover: #eff6ff;
+}
+
+/* ── Dark Mode Variables ── */
+body.dark-mode {
+  --bg-page: #0f1117;
+  --bg-card: #1a1d27;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --border: #2d3142;
+  --primary-blue: #3b82f6;
+  --mode-hover: #1e293b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+body { 
+    background: var(--bg-page); 
+    color: var(--text-main); 
+    display: flex; 
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ── Theme Toggle Button ── */
+.theme-icon-btn {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    transition: 0.3s;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.logo-text { font-size: 1.6rem; font-weight: 900; color: var(--primary-blue); margin-bottom: 40px; padding-left: 5px; letter-spacing: -0.5px; }
+
+.nav-menu { list-style: none; flex: 1; }
+
+.nav-item {
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.2s;
+}
+
+.nav-item:hover, .nav-item.active { background: var(--primary-blue); color: white; }
+
+.btn-logout {
+  margin-top: auto;
+  padding: 12px;
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.main-content { margin-left: var(--sidebar-width); flex: 1; padding: 40px 5%; }
+h2 { font-size: 1.8rem; font-weight: 900; margin-bottom: 6px; }
+.subtitle { color: var(--text-muted); margin-bottom: 28px; }
+
+/* Network Status Hero */
+.network-hero {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  transition: background 0.3s;
+}
+
+.signal-visual {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 64px;
+}
+
+.signal-bar {
+  width: 14px;
+  border-radius: 3px;
+  background: var(--border);
+  transition: background 0.4s;
+}
+
+.signal-bar.active { background: var(--net-good); }
+
+.network-status-label {
+  font-size: 1.6rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.status-dot.good   { background: var(--net-good); }
+.status-dot.medium { background: var(--net-medium); }
+.status-dot.poor   { background: var(--net-poor); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.network-details {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.net-detail { display: flex; flex-direction: column; gap: 3px; }
+.net-detail .val { font-weight: 900; font-size: 1.1rem; color: var(--primary-blue); }
+.net-detail .lbl { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+
+.network-actions { display: flex; gap: 12px; margin-left: auto; }
+
+.net-btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s;
+}
+
+.net-btn.primary { background: var(--primary-blue); color: white; }
+.net-btn.secondary { background: var(--bg-page); border: 1px solid var(--border); color: var(--text-main); }
+
+/* Layout panels */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 26px;
+  transition: background 0.3s;
+}
+
+.panel h3 { font-weight: 900; font-size: 1.05rem; margin-bottom: 20px; }
+
+/* Gauge */
+.gauge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gauge-svg { width: 200px; height: 120px; }
+.gauge-value { font-size: 2rem; font-weight: 900; color: var(--primary-blue); margin-top: 8px; }
+.gauge-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+
+/* Mode Toggle */
+.mode-options { display: flex; flex-direction: column; gap: 14px; }
+
+.mode-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.mode-option.selected { border-color: var(--primary-blue); background: var(--mode-hover); }
+
+.mode-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.mode-text { flex: 1; }
+.mode-text h4 { font-weight: 800; font-size: 0.9rem; margin-bottom: 3px; }
+.mode-text p  { font-size: 0.78rem; color: var(--text-muted); }
+
+.mode-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mode-option.selected .mode-radio { border-color: var(--primary-blue); background: var(--primary-blue); }
+.mode-radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+  display: none;
+}
+.mode-option.selected .mode-radio::after { display: block; }
+
+/* Data Usage */
+.data-usage-list { display: flex; flex-direction: column; gap: 14px; }
+.du-item { display: flex; flex-direction: column; gap: 6px; }
+.du-top  { display: flex; justify-content: space-between; font-size: 0.85rem; }
+.du-name { font-weight: 700; }
+.du-val  { font-weight: 800; color: var(--primary-blue); }
+
+.du-bar  { height: 8px; background: var(--bg-page); border-radius: 4px; overflow: hidden; }
+.du-fill { height: 100%; border-radius: 4px; }
+
+/* Savings banner */
+.savings-banner {
+  background: linear-gradient(135deg, #111827, #1e3a5f);
+  border-radius: 20px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  color: white;
+}
+
+.savings-icon { font-size: 3rem; }
+.savings-text h3 { font-size: 1.3rem; font-weight: 900; margin-bottom: 6px; }
+.savings-text p  { color: #9ca3af; font-size: 0.88rem; }
+.savings-numbers { margin-left: auto; display: flex; gap: 32px; }
+.sn-item { text-align: center; }
+.sn-val  { font-size: 1.8rem; font-weight: 900; color: #60a5fa; }
+.sn-lbl  { font-size: 0.75rem; color: #9ca3af; font-weight: 600; margin-top: 4px; }
+
+@media (max-width: 850px) {
+    .sidebar { display: none; }
+    .main-content { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-text">Nexo</div>
+  <ul class="nav-menu">
+    <li class="nav-item" onclick="goTo('dashboard.html')">🏠 Dashboard</li>
+    <li class="nav-item" onclick="goTo('library.html')">🎧 Library</li>
+    <li class="nav-item" onclick="goTo('analytics.html')">📊 Analytics</li>
+    <li class="nav-item active">📶 Network</li>
+    <li class="nav-item" onclick="goTo('settingsstudent.html')">⚙️ Settings</li>
+  </ul>
+  <button class="btn-logout" onclick="goTo('homepage.html')">🚪 Logout</button>
+</aside>
+
+<button id="theme-toggle" class="theme-icon-btn" onclick="toggleTheme()">
+    <span id="theme-icon">🌙</span>
+</button>
+
+<main class="main-content">
+  <h2>Network 📶</h2>
+  <p class="subtitle">Real-time connection status and data optimization.</p>
+
+  <div class="network-hero">
+    <div class="signal-visual" id="signalBars"></div>
+    <div class="network-info">
+      <div class="network-status-label">
+        <div class="status-dot good" id="statusDot"></div>
+        <span id="statusText">Good Connection</span>
+      </div>
+      <div class="network-details">
+        <div class="net-detail">
+          <span class="val" id="speedVal">2.4 KB/s</span>
+          <span class="lbl">Current Speed</span>
+        </div>
+        <div class="net-detail">
+          <span class="val" id="pingVal">48 ms</span>
+          <span class="lbl">Ping</span>
+        </div>
+        <div class="net-detail">
+          <span class="val" id="typeVal">4G</span>
+          <span class="lbl">Network Type</span>
+        </div>
+        <div class="net-detail">
+          <span class="val" id="usedVal">18.4 MB</span>
+          <span class="lbl">Used Today</span>
+        </div>
+      </div>
+    </div>
+    <div class="network-actions">
+      <button class="net-btn primary" onclick="runSpeedTest()">⚡ Speed Test</button>
+      <button class="net-btn secondary" id="autoModeBtn" onclick="toggleAutoMode()">⚙️ Auto Mode</button>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="panel">
+      <h3>📡 Live Speed</h3>
+      <div class="gauge-wrap">
+        <svg class="gauge-svg" viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg">
+          <path id="gaugeTrack" d="M 20 100 A 80 80 0 0 1 180 100" stroke="#e5e7eb" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <path id="gaugeFill" d="M 20 100 A 80 80 0 0 1 180 100" stroke="#1d63ff" stroke-width="14" fill="none" stroke-linecap="round"
+            stroke-dasharray="251.2" stroke-dashoffset="150"/>
+          <line id="gaugeNeedle" x1="100" y1="100" x2="100" y2="30" stroke="#111827" stroke-width="3" stroke-linecap="round"
+            transform="rotate(-60, 100, 100)"/>
+          <circle cx="100" cy="100" r="5" fill="#111827" id="gaugeCenter"/>
+          <text x="18"  y="115" font-size="10" fill="#9ca3af" font-family="Inter">0</text>
+          <text x="165" y="115" font-size="10" fill="#9ca3af" font-family="Inter">10+</text>
+          <text x="85"  y="28"  font-size="10" fill="#9ca3af" font-family="Inter">5</text>
+        </svg>
+        <div class="gauge-value"><span id="gaugeNum">2.4</span> KB/s</div>
+        <div class="gauge-label">Real-time download speed</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>⚙️ Learning Mode</h3>
+      <div class="mode-options">
+        <div class="mode-option selected" onclick="selectMode(this)">
+          <div class="mode-icon" style="background:#dbeafe">🎧</div>
+          <div class="mode-text">
+            <h4>Audio + Whiteboard</h4>
+            <p>Best for stable connections · ~3.5 KB/s</p>
+          </div>
+          <div class="mode-radio"></div>
+        </div>
+        <div class="mode-option" onclick="selectMode(this)">
+          <div class="mode-icon" style="background:#dcfce7">🔊</div>
+          <div class="mode-text">
+            <h4>Audio Only</h4>
+            <p>Ideal for slow networks · ~0.8 KB/s</p>
+          </div>
+          <div class="mode-radio"></div>
+        </div>
+        <div class="mode-option" onclick="selectMode(this)">
+          <div class="mode-icon" style="background:#f3f4f6">📄</div>
+          <div class="mode-text">
+            <h4>Text Only</h4>
+            <p>Ultra low-data mode · ~0.1 KB/s</p>
+          </div>
+          <div class="mode-radio"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:24px;">
+    <h3>💾 Data Usage Breakdown</h3>
+    <br>
+    <div class="data-usage-list">
+      <div class="du-item">
+        <div class="du-top"><span class="du-name">🎧 Audio Lectures</span><span class="du-val">8.2 MB</span></div>
+        <div class="du-bar"><div class="du-fill" style="width:60%;background:var(--primary-blue)"></div></div>
+      </div>
+      <div class="du-item">
+        <div class="du-top"><span class="du-name">📊 Whiteboard Sync</span><span class="du-val">4.6 MB</span></div>
+        <div class="du-bar"><div class="du-fill" style="width:33%;background:#a855f7"></div></div>
+      </div>
+      <div class="du-item">
+        <div class="du-top"><span class="du-name">📄 Text & Notes</span><span class="du-val">1.4 MB</span></div>
+        <div class="du-bar"><div class="du-fill" style="width:10%;background:#22c55e"></div></div>
+      </div>
+      <div class="du-item">
+        <div class="du-top"><span class="du-name">📡 Chat & Sync</span><span class="du-val">4.2 MB</span></div>
+        <div class="du-bar"><div class="du-fill" style="width:30%;background:#f97316"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="savings-banner">
+    <div class="savings-icon">🚀</div>
+    <div class="savings-text">
+      <h3>Nexo Saves Your Data</h3>
+      <p>Audio + Whiteboard uses up to 95% less data than video streaming.</p>
+    </div>
+    <div class="savings-numbers">
+      <div class="sn-item"><div class="sn-val">240 MB</div><div class="sn-lbl">Saved This Week</div></div>
+      <div class="sn-item"><div class="sn-val">1.2 GB</div><div class="sn-lbl">Saved This Month</div></div>
+    </div>
+  </div>
+</main>
+
+<script>
+function goTo(page) { window.location.href = page; }
+function logout() { localStorage.removeItem("user"); window.location.href = "auth.html"; }
+
+/* ── Theme Logic ── */
+function savePref(key, value) {
+    const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+    prefs[key] = value;
+    localStorage.setItem('nexoPrefs', JSON.stringify(prefs));
+}
+
+function getPref(key, fallback) {
+    const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+    return prefs[key] !== undefined ? prefs[key] : fallback;
+}
+
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+    updateGaugeColors(isDark);
+    savePref('darkMode', isDark);
+}
+
+function updateGaugeColors(isDark) {
+    document.getElementById('gaugeTrack').setAttribute('stroke', isDark ? '#2d3142' : '#e5e7eb');
+    document.getElementById('gaugeNeedle').setAttribute('stroke', isDark ? '#f3f4f6' : '#111827');
+    document.getElementById('gaugeCenter').setAttribute('fill', isDark ? '#f3f4f6' : '#111827');
+}
+
+// Signal bars
+const bars = document.getElementById('signalBars');
+const heights = [16, 28, 40, 52, 64];
+heights.forEach((h, i) => {
+  const div = document.createElement('div');
+  div.className = 'signal-bar' + (i < 4 ? ' active' : '');
+  div.style.height = h + 'px';
+  bars.appendChild(div);
+});
+
+// Simulate live speed
+let speed = 2.4;
+function updateSpeed() {
+  speed = Math.max(0.5, Math.min(10, speed + (Math.random() - 0.5) * 0.4));
+  const s = speed.toFixed(1);
+  document.getElementById('speedVal').textContent = s + ' KB/s';
+  document.getElementById('gaugeNum').textContent  = s;
+
+  const angle = (speed / 10) * 120 - 60;
+  document.getElementById('gaugeNeedle').setAttribute('transform', `rotate(${angle}, 100, 100)`);
+  const dashOffset = 251.2 - (speed / 10) * 251.2;
+  document.getElementById('gaugeFill').setAttribute('stroke-dashoffset', dashOffset);
+
+  let dot = document.getElementById('statusDot');
+  let txt = document.getElementById('statusText');
+  if (speed > 5) { dot.className = 'status-dot good'; txt.textContent = 'Good Connection'; }
+  else if (speed > 2) { dot.className = 'status-dot medium'; txt.textContent = 'Medium Connection'; }
+  else { dot.className = 'status-dot poor'; txt.textContent = 'Poor Connection'; }
+}
+setInterval(updateSpeed, 1800);
+
+function runSpeedTest() {
+  const btn = document.querySelector('.net-btn.primary');
+  btn.textContent = '⏳ Testing…';
+  btn.disabled = true;
+  setTimeout(() => { btn.textContent = '⚡ Speed Test'; btn.disabled = false; updateSpeed(); }, 2500);
+}
+
+function selectMode(el) {
+  document.querySelectorAll('.mode-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+let autoMode = false;
+function toggleAutoMode() {
+  autoMode = !autoMode;
+  document.getElementById('autoModeBtn').textContent = autoMode ? '✅ Auto Mode' : '⚙️ Auto Mode';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const darkMode = getPref('darkMode', false);
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-icon').textContent = '☀️';
+        updateGaugeColors(true);
+    }
+});
+</script>
+</body>
+</html>
