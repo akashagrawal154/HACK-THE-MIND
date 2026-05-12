@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexo | Student Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary-blue: #1d63ff;
+    --bg-page: #f8faff;
+    --bg-card: #ffffff;
+    --text-main: #111827;
+    --text-muted: #4b5563;
+    --border: #e5e7eb;
+    --sidebar-width: 260px;
+}
+
+/* ── Dark Mode Variables ── */
+body.dark-mode {
+    --bg-page: #0f1117;
+    --bg-card: #1a1d27;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --border: #2d3142;
+    --primary-blue: #3b82f6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+body {
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    display: flex;
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ── Theme Toggle Button ── */
+.theme-icon-btn {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    transition: 0.3s;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    outline: none;
+}
+
+.theme-icon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+body.dark-mode .theme-icon-btn {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* ── Sidebar ── */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-card);
+    border-right: 1px solid var(--border);
+    padding: 30px 25px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.logo-text {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--primary-blue);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+    letter-spacing: -0.5px;
+}
+
+.nav-menu { list-style: none; flex: 1; }
+
+.nav-item {
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.2s;
+    user-select: none;
+}
+
+.nav-item:hover, .nav-item.active {
+    background: var(--primary-blue);
+    color: white;
+}
+
+/* ── Main ── */
+.main-content {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    padding: 40px 5%;
+}
+
+/* ── Quick Buttons ── */
+.quick-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.quick-actions button {
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+    transition: 0.2s;
+    font-size: 0.9rem;
+}
+
+.quick-actions button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(29,99,255,0.3);
+}
+
+/* ── Stats ── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: 0.2s;
+    cursor: default;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+}
+
+.stat-card h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary-blue);
+}
+
+/* ── Courses ── */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-weight: 900;
+    font-size: 1.4rem;
+}
+
+.see-all {
+    color: var(--primary-blue);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.see-all:hover { text-decoration: underline; }
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.course-card {
+    background: var(--bg-card);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.09);
+}
+
+.course-img { height: 160px; }
+
+.course-info { padding: 20px; }
+
+.course-info h4 { font-weight: 800; margin-bottom: 4px; }
+
+.progress-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    margin-top: 15px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary-blue);
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+/* ── Network strip ── */
+.network-strip {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.network-strip:hover { border-color: var(--primary-blue); }
+
+.net-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: pulse 1.5s infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.net-strip-text { flex: 1; font-size: 0.88rem; font-weight: 700; }
+.net-strip-text span { color: var(--text-muted); font-weight: 600; font-size: 0.8rem; margin-left: 8px; }
+
+.net-arrow { color: var(--primary-blue); font-weight: 900; }
+
+/* ── Logout ── */
+.btn-logout {
+    margin-top: auto;
+    padding: 12px;
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-logout:hover { background: #fecaca; }
+
+@media (max-width: 720px) {
+    .sidebar { display: none; }
+    .main-content { margin-left: 0; }
+    .theme-icon-btn { top: 20px; right: 20px; }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo-text">Nexo</div>
+    <ul class="nav-menu">
+        <li class="nav-item active" onclick="goTo('dashboard.html')">🏠 Dashboard</li>
+        <li class="nav-item" onclick="goTo('library.html')">🎧 Library</li>
+        <li class="nav-item" onclick="goTo('analytics.html')">📊 Analytics</li>
+        <li class="nav-item" onclick="goTo('network.html')">📶 Network</li>
+        <li class="nav-item" onclick="goTo('settingsstudent.html')">⚙️ Settings</li>
+    </ul>
+    <button class="btn-logout" onclick="goTo('homepage.html')">🚪 Logout</button>
+</aside>
+
+<button id="theme-toggle" class="theme-icon-btn" onclick="toggleTheme()">
+    <span id="theme-icon">🌙</span>
+</button>
+
+<main class="main-content">
+    <h2>Hello, Student! 👋</h2>
+    <p style="color: var(--text-muted); margin-bottom:20px;">Ready to continue your learning journey?</p>
+
+    <div class="network-strip" onclick="goTo('network.html')">
+        <div class="net-dot"></div>
+        <div class="net-strip-text">
+            Good Connection
+            <span>2.4 KB/s · 18.4 MB used today · 240 MB saved</span>
+        </div>
+        <span class="net-arrow">📶 View Details →</span>
+    </div>
+
+    <div class="quick-actions">
+        <button onclick="goTo('liveclasses.html')">🎯 Join Class</button>
+        <button onclick="goTo('library.html')">🎧 Library</button>
+        <button onclick="goTo('analytics.html')">📊 Analytics</button>
+        <button onclick="goTo('network.html')">📶 Network</button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Courses In Progress</h3>
+            <p>4</p>
+        </div>
+        <div class="stat-card">
+            <h3>Completed Tasks</h3>
+            <p>12</p>
+        </div>
+        <div class="stat-card">
+            <h3>Study Hours</h3>
+            <p>24.5</p>
+        </div>
+        <div class="stat-card">
+            <h3>Attendance Rate</h3>
+            <p>80%</p>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h3 class="section-title">Continue Learning</h3>
+        <span class="see-all" onclick="goTo('library.html')">See all →</span>
+    </div>
+
+    <div class="course-grid">
+        <div class="course-card" onclick="goTo('library.html')">
+            <div class="course-img" style="background: linear-gradient(135deg, #6366f1, #a855f7)"></div>
+            <div class="course-info">
+                <h4>Advanced Circuit Analysis</h4>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px;">Physics & Engineering</p>
+                <p style="font-size:0.78rem; color:var(--text-muted);">65% complete</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 65%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" onclick="goTo('library.html')">
+            <div class="course-img" style="background: linear-gradient(135deg, #22c55e, #4ade80)"></div>
+            <div class="course-info">
+                <h4>Modern Science & Technology</h4>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px;">Science</p>
+                <p style="font-size:0.78rem; color:var(--text-muted);">40% complete</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 40%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" onclick="goTo('library.html')">
+            <div class="course-img" style="background: linear-gradient(135deg, #f97316, #fb923c)"></div>
+            <div class="course-info">
+                <h4>Thermodynamics</h4>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px;">Physics</p>
+                <p style="font-size:0.78rem; color:var(--text-muted);">82% complete</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 82%; background: #f97316"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" onclick="goTo('library.html')">
+            <div class="course-img" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8)"></div>
+            <div class="course-info">
+                <h4>Semiconductor Devices</h4>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px;">Electronics</p>
+                <p style="font-size:0.78rem; color:var(--text-muted);">28% complete</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 28%; background: #0ea5e9"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+function goTo(page) { window.location.href = page; }
+
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "auth.html";
+}
+
+/* ── Theme Logic ── */
+function savePref(key, value) {
+    const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+    prefs[key] = value;
+    localStorage.setItem('nexoPrefs', JSON.stringify(prefs));
+}
+
+function getPref(key, fallback) {
+    const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+    return prefs[key] !== undefined ? prefs[key] : fallback;
+}
+
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+    savePref('darkMode', isDark);
+}
+
+// Apply theme on load
+window.addEventListener('DOMContentLoaded', () => {
+    const darkMode = getPref('darkMode', false);
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-icon').textContent = '☀️';
+    }
+});
+</script>
+
+</body>
+</html>
