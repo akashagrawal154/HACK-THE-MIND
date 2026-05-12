@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteLearn | My Classes (CBSE)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8faff;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent-blue: #2563eb;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-sidebar: 4px 0 15px rgba(0, 0, 0, 0.03);
+        }
+
+        /* ── Dark Mode Variables (Matching Student Dashboard Logic) ── */
+        body.dark-mode {
+            --bg-body: #0f1117;
+            --bg-sidebar: #1a1d27;
+            --bg-card: #1a1d27;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-blue: #3b82f6;
+            --border-color: #2d3142;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --shadow-sidebar: 4px 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background 0.3s, color 0.3s, border 0.3s; }
+        body { background-color: var(--bg-body); color: var(--text-main); display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        nav { 
+            width: 280px; 
+            background: var(--bg-sidebar); 
+            box-shadow: var(--shadow-sidebar);
+            padding: 2.5rem 1.2rem; 
+            display: flex; 
+            flex-direction: column; 
+            position: fixed; 
+            height: 100vh; 
+            z-index: 1000;
+        }
+
+        .logo { 
+            color: var(--accent-blue); 
+            font-weight: 800; 
+            font-size: 1.8rem; 
+            margin-bottom: 2.5rem; 
+            padding-left: 0.8rem; 
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { flex-grow: 1; }
+
+        .nav-link { 
+            padding: 0.9rem 1.2rem; 
+            text-decoration: none; 
+            color: var(--text-muted); 
+            border-radius: 12px; 
+            margin-bottom: 0.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            font-weight: 600; 
+            font-size: 0.95rem;
+        }
+
+        .nav-link.active { 
+            background: var(--accent-blue); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .nav-link:hover:not(.active):not(.btn-create) { background: var(--bg-body); color: var(--accent-blue); }
+
+        /* Create Class Button - Dashed */
+        .btn-create { 
+            margin: 1.5rem 0; 
+            border: 2px dashed var(--border-color); 
+            color: var(--accent-blue) !important; 
+            justify-content: center; 
+            cursor: pointer; 
+            background: transparent;
+        }
+
+        /* Logout Button - Red Tint */
+        .logout-btn { 
+            background: #fee2e2; 
+            color: #ef4444; 
+            text-align: center; 
+            padding: 0.9rem; 
+            border-radius: 12px; 
+            text-decoration: none; 
+            font-weight: 700; 
+            margin-top: auto; 
+        }
+        body.dark-mode .logout-btn { background: rgba(239, 68, 68, 0.15); }
+
+        /* Theme Toggle Button (Matching Student Design) */
+        .theme-icon-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            z-index: 1100;
+            box-shadow: var(--shadow);
+            outline: none;
+        }
+
+        .theme-icon-btn:hover { transform: translateY(-2px); }
+
+        /* Content Area */
+        main { flex: 1; margin-left: 280px; padding: 2.5rem 4rem; }
+        header { margin-bottom: 2.5rem; }
+        .title-bold { font-weight: 900; font-size: 2.4rem; letter-spacing: -1px; }
+
+        /* Grade Selector Tabs */
+        .grade-nav { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 2rem; scrollbar-width: thin; }
+        .grade-btn { padding: 10px 20px; border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 30px; cursor: pointer; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+        .grade-btn.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+
+        /* Subject Grid */
+        .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .subject-card { background: var(--bg-card); padding: 2rem; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow); position: relative; overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .subject-card:hover { transform: translateY(-5px); border-color: var(--accent-blue); }
+        .subject-card i { font-size: 2.5rem; color: var(--accent-blue); margin-bottom: 1.5rem; opacity: 0.8; }
+        .subject-card h3 { font-weight: 800; font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .subject-card p { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        
+        .badge { position: absolute; top: 15px; right: 15px; background: rgba(37, 99, 235, 0.1); color: var(--accent-blue); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+
+        @media (max-width: 720px) {
+            nav { display: none; }
+            main { margin-left: 0; padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Nexo</div>
+        <div class="nav-links">
+            <a href="dashboardteacher.html" class="nav-link"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a>
+            <a href="myclasses.html" class="nav-link active"><i class="fas fa-layer-group"></i> <span>My Classes</span></a>
+            <div class="nav-link btn-create" onclick="createNewClass()">
+                <i class="fas fa-plus-circle"></i> <span>Create New Class</span>
+            </div>
+            <a href="studentlist.html" class="nav-link"><i class="fas fa-user-graduate"></i> <span>Students</span></a>
+            <a href="grading.html" class="nav-link"><i class="fas fa-check-double"></i> <span>Grading</span></a>
+            <a href="settingteacher.html" class="nav-link"><i class="fas fa-cog"></i> <span>Settings</span></a>
+        </div>
+        <a href="homepage.html" class="logout-btn">Logout</a>
+    </nav>
+
+    <button id="theme-toggle" class="theme-icon-btn" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span>
+    </button>
+
+    <main>
+        <header>
+            <h1 class="title-bold">My Classes</h1>
+            <p style="color: var(--text-muted); font-weight: 500;">Select a grade to view CBSE curriculum subjects.</p>
+        </header>
+
+        <div class="grade-nav" id="gradeNav"></div>
+        <div class="subject-grid" id="subjectGrid"></div>
+    </main>
+
+    <script>
+        const subjectsData = {
+            primary: ["English", "Hindi", "Mathematics", "Environmental Studies (EVS)", "Art & Craft"],
+            middle: ["English", "Hindi", "Mathematics", "Science", "Social Science", "Sanskrit/Regional", "Computer Science"],
+            secondary: ["English Communicative", "Hindi Course A/B", "Mathematics", "Science (Phy/Che/Bio)", "Social Science", "Information Technology"],
+            senior: ["Physics", "Chemistry", "Mathematics", "Biology", "Accountancy", "Business Studies", "Economics", "History", "Political Science", "Geography", "Computer Science (Python)", "English Core"]
+        };
+
+        const gradeNav = document.getElementById('gradeNav');
+        const subjectGrid = document.getElementById('subjectGrid');
+
+        // Create Grade Buttons 1-12
+        for (let i = 1; i <= 12; i++) {
+            const btn = document.createElement('button');
+            btn.className = `grade-btn ${i === 10 ? 'active' : ''}`;
+            btn.innerText = `Grade ${i}`;
+            btn.onclick = () => loadSubjects(i, btn);
+            gradeNav.appendChild(btn);
+        }
+
+        function loadSubjects(grade, element) {
+            document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            subjectGrid.innerHTML = '';
+            let list = [];
+
+            if (grade <= 5) list = subjectsData.primary;
+            else if (grade <= 8) list = subjectsData.middle;
+            else if (grade <= 10) list = subjectsData.secondary;
+            else list = subjectsData.senior;
+
+            list.forEach(sub => {
+                const icon = getIcon(sub);
+                subjectGrid.innerHTML += `
+                    <div class="subject-card">
+                        <span class="badge">CBSE</span>
+                        <i class="${icon}"></i>
+                        <h3>${sub}</h3>
+                        <p>NCERT Curriculum • Grade ${grade}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function getIcon(subject) {
+            if (subject.includes("Math")) return "fas fa-calculator";
+            if (subject.includes("Science") || subject.includes("Physics") || subject.includes("Chemistry") || subject.includes("Biology")) return "fas fa-flask";
+            if (subject.includes("English") || subject.includes("Hindi")) return "fas fa-language";
+            if (subject.includes("Social") || subject.includes("History") || subject.includes("Political") || subject.includes("Geography")) return "fas fa-globe-americas";
+            if (subject.includes("Computer") || subject.includes("Information") || subject.includes("Python")) return "fas fa-laptop-code";
+            return "fas fa-book-open";
+        }
+
+        // Initial Load for Grade 10
+        loadSubjects(10, document.querySelectorAll('.grade-btn')[9]);
+
+        /* ── Theme Logic (Exactly matching your Shared Design) ── */
+        function savePref(key, value) {
+            const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+            prefs[key] = value;
+            localStorage.setItem('nexoPrefs', JSON.stringify(prefs));
+        }
+
+        function getPref(key, fallback) {
+            const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+            return prefs[key] !== undefined ? prefs[key] : fallback;
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+            savePref('darkMode', isDark);
+        }
+
+        // Apply theme on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const darkMode = getPref('darkMode', false);
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-icon').textContent = '☀️';
+            }
+        });
+
+        function createNewClass() {
+            window.location.href = "createnewclass.html";   
+        }
+    </script>
+</body>
+</html>
