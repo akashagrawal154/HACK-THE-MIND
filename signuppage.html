@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteLearn | Create Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1d63ff;
+            --hover-blue: #1652d1;
+            --bg-page: #f8faff;
+            --bg-card: #ffffff;
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            --border: #e5e7eb;
+            --toggle-group: #f1f5f9;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --toggle-group: #334155;
+            --nav-bg: rgba(15, 23, 42, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 8%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(29, 99, 255, 0.3);
+        }
+
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--primary-blue);
+        }
+
+        .theme-switch {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: var(--toggle-group);
+            border: 2px solid var(--border);
+            color: var(--text-main);
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Main Layout --- */
+        .main-wrapper {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: flex-start;
+            padding: 60px 5%;
+            gap: 60px;
+        }
+
+        .slogan-section {
+            flex: 1;
+            position: sticky;
+            top: 120px;
+        }
+
+        .slogan-section h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 25px;
+            letter-spacing: -2px;
+            background: linear-gradient(90deg, var(--primary-blue), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(29, 99, 255, 0.1);
+        }
+
+        .slogan-section p {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 35px;
+            font-weight: 500;
+        }
+
+        .features-list { list-style: none; }
+        .features-list li {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        /* --- Sign Up Card --- */
+        .form-section {
+            flex: 1;
+            width: 100%;
+            max-width: 540px;
+        }
+
+        .signup-card {
+            background: var(--bg-card);
+            padding: 45px;
+            border-radius: 32px;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border);
+        }
+
+        .role-toggle {
+            display: flex;
+            background: var(--toggle-group);
+            padding: 6px;
+            border-radius: 16px;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .role-toggle input { display: none; }
+        .role-toggle label {
+            flex: 1;
+            padding: 14px;
+            cursor: pointer;
+            z-index: 1;
+            font-weight: 900;
+            text-align: center;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            height: calc(100% - 12px);
+            width: calc(50% - 6px);
+            background: var(--primary-blue);
+            border-radius: 12px;
+            top: 6px;
+            left: 6px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #teacher:checked ~ .toggle-slider { transform: translateX(100%); }
+        #student:checked ~ label[for="student"], 
+        #teacher:checked ~ label[for="teacher"] { color: white; }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-main);
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 800;
+            transition: all 0.2s;
+        }
+
+        .btn-social:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 900;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 2px solid var(--border);
+        }
+        .divider:not(:empty)::before { margin-right: 1.5em; }
+        .divider:not(:empty)::after { margin-left: 1.5em; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .full-width { grid-column: span 2; }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 16px;
+            background: var(--toggle-group);
+            color: var(--text-main);
+            border: 2px solid transparent;
+            border-radius: 14px;
+            outline: none;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-blue);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 5px rgba(29, 99, 255, 0.1);
+        }
+
+        .btn-signup {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(29, 99, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-signup:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+
+        .footer-link {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .footer-link a { color: var(--primary-blue); text-decoration: none; font-weight: 900; }
+
+        @media (max-width: 1024px) {
+            .main-wrapper { flex-direction: column; align-items: center; padding-top: 30px; }
+            .slogan-section { text-align: center; position: static; }
+            .slogan-section h1 { font-size: 3rem; }
+            .features-list { display: none; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+<nav>
+    <a href="#" class="logo-container">
+        <div class="logo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+        </div>
+        <span class="logo-text">Nexo</span>
+    </a>
+    <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">
+        <span>🌙</span> <span id="themeLabel">Dark</span>
+    </button>
+</nav>
+
+<div class="main-wrapper">
+    <div class="slogan-section">
+        <h1>Master Skills,<br>Shape the Future.</h1>
+        <p>The all-in-one platform for modern education. Join a community of over 50,000+ lifelong learners and expert educators.</p>
+        
+        <ul class="features-list">
+            <li><span style="color:var(--primary-blue); font-size: 1.5rem;">✦</span> Specialized curriculum for K-12</li>
+            <li><span style="color:var(--primary-blue); font-size: 1.5rem;">✦</span> Interactive expert-led sessions</li>
+            <li><span style="color:var(--primary-blue); font-size: 1.5rem;">✦</span> Real-time progress analytics</li>
+            <li><span style="color:var(--primary-blue); font-size: 1.5rem;">✦</span> Global community access</li>
+        </ul>
+    </div>
+
+    <div class="form-section">
+        <div class="signup-card">
+            <div class="social-grid">
+                <button class="btn-social">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Google
+                </button>
+                <button class="btn-social">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" width="20"> Microsoft
+                </button>
+            </div>
+
+            <div class="divider">Register with Email</div>
+
+            <div class="role-toggle">
+                <input type="radio" name="role" id="student" checked onclick="updateFields()">
+                <label for="student">🎓 Student</label>
+                
+                <input type="radio" name="role" id="teacher" onclick="updateFields()">
+                <label for="teacher">👨‍🏫 Teacher</label>
+                
+                <div class="toggle-slider"></div>
+            </div>
+
+            <form id="signupForm">
+                <div class="form-grid" id="dynamicFields">
+                    </div>
+                
+                <button type="submit" class="btn-signup">Create Account</button>
+            </form>
+
+            <div class="footer-link">
+                Already a member? <a href="loginpage.html">Login Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleTheme() {
+        const body = document.body;
+        const label = document.getElementById('themeLabel');
+        const icon = document.querySelector('.theme-switch span:first-child');
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        
+        if (isDark) {
+            body.setAttribute('data-theme', 'light');
+            label.innerText = 'Dark';
+            icon.innerText = '🌙';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            label.innerText = 'Light';
+            icon.innerText = '☀️';
+        }
+    }
+
+    function updateFields() {
+        const container = document.getElementById('dynamicFields');
+        const isStudent = document.getElementById('student').checked;
+        
+        let commonFields = `
+            <div class="input-group full-width">
+                <label>Full Name</label>
+                <input type="text" id="fullName" placeholder="Johnathan Doe" required>
+            </div>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="johndoe_99" required>
+            </div>
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="john@example.com" required>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="pw" placeholder="••••••••" required>
+            </div>
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <input type="password" id="cpw" placeholder="••••••••" required>
+            </div>
+        `;
+
+        if (isStudent) {
+            container.innerHTML = commonFields + `
+                <div class="input-group">
+                    <label>Class / Grade</label>
+                    <select id="grade" required>
+                        <option value="" disabled selected>Grade Level</option>
+                        ${Array.from({length: 12}, (_, i) => `<option value="Grade ${i+1}">Grade ${i+1}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Preferred Subjects</label>
+                    <input type="text" id="subjects" placeholder="Math, Coding...">
+                </div>
+                <div class="input-group full-width">
+                    <label>School Name</label>
+                    <input type="text" id="school" placeholder="The Elite High School">
+                </div>
+            `;
+        } else {
+            container.innerHTML = commonFields + `
+                <div class="input-group">
+                    <label>Subject Expertise</label>
+                    <input type="text" id="expertise" placeholder="Physics, Art..." required>
+                </div>
+                <div class="input-group">
+                    <label>Years of Exp.</label>
+                    <input type="number" id="experience" placeholder="e.g. 10" required>
+                </div>
+                <div class="input-group">
+                    <label>Qualification</label>
+                    <input type="text" id="qualification" placeholder="Masters, PhD..." required>
+                </div>
+                <div class="input-group">
+                    <label>Current Org.</label>
+                    <input type="text" id="org" placeholder="School or University">
+                </div>
+            `;
+        }
+
+        container.innerHTML += `
+            <div class="input-group full-width">
+                <label>Mobile Number (Optional)</label>
+                <input type="tel" id="mobile" placeholder="+1 (555) 000-0000">
+            </div>
+        `;
+    }
+
+    // Initialize fields
+    updateFields();
+
+    document.getElementById('signupForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const pw = document.getElementById('pw').value;
+        const cpw = document.getElementById('cpw').value;
+        
+        // Regex for security
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!passwordRegex.test(pw)) {
+            alert("Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.");
+            return;
+        }
+
+        if (pw !== cpw) {
+            alert("Oops! Passwords do not match.");
+            return;
+        }
+
+        // CAPTURE DATA DYNAMICALLY BASED ON ROLE
+        const role = document.querySelector('input[name="role"]:checked').id;
+        const userData = {
+            name: document.getElementById('fullName').value,
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value,
+            password: pw,
+            role: role,
+            mobile: document.getElementById('mobile').value
+        };
+
+        // Add role-specific data
+        if (role === 'student') {
+            userData.grade = document.getElementById('grade').value;
+            userData.subjects = document.getElementById('subjects').value;
+            userData.school = document.getElementById('school').value;
+        } else {
+            userData.expertise = document.getElementById('expertise').value;
+            userData.experience = document.getElementById('experience').value;
+            userData.qualification = document.getElementById('qualification').value;
+            userData.org = document.getElementById('org').value;
+        }
+
+        try {
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                window.location.href = "loginpage.html";
+            } else {
+                alert(result.error || "Signup failed");
+            }
+        } catch (err) {
+            alert("Error: Check if your server (app.js) is running!");
+        }
+    };
+</script>
+
+</body>
+</html>
