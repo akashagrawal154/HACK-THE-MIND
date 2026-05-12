@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexo | Live Classes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --primary-blue: #1d63ff;
+    --bg-page: #f8faff;
+    --bg-card: #ffffff;
+    --text-main: #111827;
+    --text-muted: #4b5563;
+    --border: #e5e7eb;
+    --sidebar-width: 260px;
+}
+
+body.dark-mode {
+    --bg-page: #0f1117;
+    --bg-card: #1a1d27;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --border: #2d3142;
+    --primary-blue: #3b82f6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+body { background: var(--bg-page); color: var(--text-main); display: flex; min-height: 100vh; transition: background 0.3s; }
+
+/* ── Sidebar ── */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-card);
+    border-right: 1px solid var(--border);
+    padding: 30px 25px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+}
+.logo-text { font-size: 1.6rem; font-weight: 900; color: var(--primary-blue); margin-bottom: 40px; }
+.nav-menu { list-style: none; flex: 1; }
+.nav-item {
+    padding: 14px 18px; border-radius: 12px; margin-bottom: 8px; cursor: pointer;
+    font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 12px;
+}
+.nav-item.active { background: var(--primary-blue); color: white; }
+
+/* ── Main Layout ── */
+.main-content { margin-left: var(--sidebar-width); flex: 1; padding: 50px 6%; }
+.main-heading { font-size: 2.8rem; font-weight: 900; letter-spacing: -1.5px; margin-bottom: 5px; }
+.highlight { background: linear-gradient(to right, var(--primary-blue), #4f8bff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* ── Join via Code Card ── */
+.join-section {
+    background: linear-gradient(135deg, #1d63ff, #0047e1);
+    border-radius: 28px;
+    padding: 35px;
+    color: white;
+    margin: 30px 0 45px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 20px 40px rgba(29, 99, 255, 0.2);
+}
+.join-content h3 { font-size: 1.5rem; font-weight: 900; margin-bottom: 8px; }
+.join-content p { opacity: 0.85; font-size: 0.95rem; margin-bottom: 20px; }
+
+.join-controls { display: flex; gap: 12px; }
+.code-input {
+    padding: 15px 20px;
+    border-radius: 14px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-weight: 800;
+    font-size: 1rem;
+    width: 200px;
+    outline: none;
+}
+.btn-join-primary {
+    padding: 15px 30px;
+    background: white;
+    color: var(--primary-blue);
+    border: none;
+    border-radius: 14px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+/* ── Grid Layout ── */
+.class-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.section-label { font-weight: 900; font-size: 1.1rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+
+.class-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 18px;
+    transition: 0.3s;
+}
+.class-card:hover { transform: translateY(-5px); border-color: var(--primary-blue); }
+
+.icon-box { width: 52px; height: 52px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+.info { flex: 1; }
+.info h4 { font-weight: 800; font-size: 1rem; margin-bottom: 3px; }
+.info p { font-size: 0.8rem; color: var(--text-muted); }
+
+/* ── UI Elements ── */
+.pulse { width: 10px; height: 10px; background: #ef4444; border-radius: 50%; animation: pulse-red 1.5s infinite; }
+@keyframes pulse-red {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.theme-toggle {
+    position: fixed; top: 30px; right: 30px; background: var(--bg-card); border: 1px solid var(--border);
+    width: 45px; height: 45px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+
+@media (max-width: 1000px) { .class-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="logo-text">Nexo</div>
+    <ul class="nav-menu">
+        <li class="nav-item" onclick="location.href='dashboard.html'">🏠 Dashboard</li>
+        <li class="nav-item" onclick="location.href='library.html'">🎧 Library</li>
+        <li class="nav-item active">🎯 Live Class</li>
+        <li class="nav-item" onclick="location.href='settingsstudent.html'">⚙️ Settings</li>
+    </ul>
+</aside>    
+
+<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+
+<main class="main-content">
+    <header>
+        <h2 class="main-heading">Live <span class="highlight">Classes</span> 🎯</h2>
+        <p style="color: var(--text-muted); font-weight: 600;">Explore more subjects and never miss a session.</p>
+    </header>
+
+    <section class="join-section">
+        <div class="join-content">
+            <h3>Enter Class Code</h3>
+            <p>Enter the 6-digit invitation code to jump into a private lecture.</p>
+            <div class="join-controls">
+                <input type="text" class="code-input" id="classCode" placeholder="Ex: 882-941" maxlength="7">
+                <button class="btn-join-primary" onclick="handleJoin()">Join Classroom</button>
+            </div>
+        </div>
+        <div style="font-size: 5rem; opacity: 0.15; transform: rotate(15deg);">🔑</div>
+    </section>
+
+    <div class="class-grid">
+        <div class="column">
+            <span class="section-label"><span class="pulse"></span> Currently Streaming</span>
+            
+            <div class="class-card">
+                <div class="icon-box" style="background: #ede9fe;">⚡</div>
+                <div class="info">
+                    <h4>Advanced Circuit Analysis</h4>
+                    <p>Prof. Sharma • 15m ago • 42 Joined</p>
+                </div>
+                <button style="padding: 10px 18px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer;">Join</button>
+            </div>
+
+            <div class="class-card">
+                <div class="icon-box" style="background: #fee2e2;">🧪</div>
+                <div class="info">
+                    <h4>Organic Chemistry II</h4>
+                    <p>Dr. Kapoor • 8m ago • 31 Joined</p>
+                </div>
+                <button style="padding: 10px 18px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer;">Join</button>
+            </div>
+
+            <div class="class-card">
+                <div class="icon-box" style="background: #dcfce7;">🤖</div>
+                <div class="info">
+                    <h4>Intro to Neural Networks</h4>
+                    <p>Dr. Smith • 22m ago • 56 Joined</p>
+                </div>
+                <button style="padding: 10px 18px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer;">Join</button>
+            </div>
+
+            <div class="class-card">
+                <div class="icon-box" style="background: #fef3c7;">🧬</div>
+                <div class="info">
+                    <h4>Cellular Biology Basics</h4>
+                    <p>Dr. Ananya • 35m ago • 19 Joined</p>
+                </div>
+                <button style="padding: 10px 18px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer;">Join</button>
+            </div>
+        </div>
+
+        <div class="column">
+            <span class="section-label">📅 Upcoming Sessions</span>
+            
+            <div class="class-card">
+                <div class="icon-box" style="background: #e0f2fe;">💻</div>
+                <div class="info">
+                    <h4>DBMS Fundamentals</h4>
+                    <p>Prof. Verma • 4:30 PM Today</p>
+                </div>
+                <button style="padding: 10px 18px; background: var(--bg-page); color: var(--text-main); border: 1px solid var(--border); border-radius: 10px; font-weight: 800; cursor: pointer;">Remind</button>
+            </div>
+
+            <div class="class-card">
+                <div class="icon-box" style="background: #ffedd5;">📊</div>
+                <div class="info">
+                    <h4>Digital Logic Design</h4>
+                    <p>Prof. Gupta • 6:15 PM Today</p>
+                </div>
+                <button style="padding: 10px 18px; background: var(--bg-page); color: var(--text-main); border: 1px solid var(--border); border-radius: 10px; font-weight: 800; cursor: pointer;">Remind</button>
+            </div>
+
+            <div class="class-card">
+                <div class="icon-box" style="background: #fdf2f8;">📐</div>
+                <div class="info">
+                    <h4>Applied Mathematics II</h4>
+                    <p>Prof. Joshi • 10:00 AM Tomorrow</p>
+                </div>
+                <button style="padding: 10px 18px; background: var(--bg-page); color: var(--text-main); border: 1px solid var(--border); border-radius: 10px; font-weight: 800; cursor: pointer;">Remind</button>
+            </div>
+
+            <div class="class-card">
+                <div class="icon-box" style="background: #f0fdf4;">🌡️</div>
+                <div class="info">
+                    <h4>Thermodynamics Laws</h4>
+                    <p>Prof. Nair • 1:30 PM Tomorrow</p>
+                </div>
+                <button style="padding: 10px 18px; background: var(--bg-page); color: var(--text-main); border: 1px solid var(--border); border-radius: 10px; font-weight: 800; cursor: pointer;">Remind</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+function handleJoin() {
+    const code = document.getElementById('classCode').value;
+    if(code.trim().length < 4) {
+        alert("Please enter a valid class code.");
+    } else {
+        alert("Joining Classroom: " + code);
+    }
+}
+
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', isDark);
+    document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('themeBtn').textContent = '☀️';
+    }
+});
+</script>
+</body>
+</html>
