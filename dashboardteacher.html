@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteLearn | Teacher Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #f8faff;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent-blue: #2563eb;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --sidebar-active: #2563eb;
+        }
+
+        /* ── Dark Mode Variables (Matching Student Logic) ── */
+        body.dark-mode {
+            --bg-body: #0f1117;
+            --bg-sidebar: #1a1d27;
+            --bg-card: #1a1d27;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-blue: #3b82f6;
+            --border-color: #2d3142;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --sidebar-active: #3b82f6;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Inter', sans-serif; 
+            transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+        }
+
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            display: flex; 
+            min-height: 100vh; 
+        }
+
+        /* ── Theme Toggle Button (Matching Student Style) ── */
+        .theme-icon-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            outline: none;
+        }
+
+        .theme-icon-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 280px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            padding: 2.5rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .logo { 
+            color: var(--accent-blue); 
+            font-weight: 900; 
+            font-size: 1.6rem; 
+            margin-bottom: 2.5rem; 
+            padding-left: 0.8rem; 
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { flex-grow: 1; }
+
+        .nav-link {
+            padding: 0.9rem 1.2rem;
+            text-decoration: none;
+            color: var(--text-muted);
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .nav-link.active { 
+            background: var(--sidebar-active); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .nav-link:hover:not(.active) { 
+            background: var(--bg-body); 
+            color: var(--accent-blue); 
+        }
+
+        .btn-create {
+            margin: 1.5rem 0;
+            border: 2px dashed var(--border-color);
+            color: var(--accent-blue) !important;
+            justify-content: center;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            text-align: center;
+            padding: 0.9rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: auto;
+        }
+
+        body.dark-mode .logout-btn { background: rgba(239, 68, 68, 0.15); }
+
+        /* Main Content */
+        main { 
+            flex: 1; 
+            margin-left: 280px;
+            padding: 2.5rem 4rem; 
+        }
+
+        header {
+            margin-bottom: 3rem;
+        }
+
+        .greeting-bold {
+            font-weight: 900; 
+            font-size: 2.4rem; 
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+        }
+
+        .sub-text {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 1.8rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card p { 
+            font-size: 2.2rem; 
+            font-weight: 800; 
+            color: var(--accent-blue); 
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .course-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-banner { height: 160px; }
+        .card-content { padding: 1.8rem; }
+        
+        .progress-bar-bg { 
+            height: 10px; 
+            background: var(--border-color); 
+            border-radius: 20px; 
+            margin-top: 10px;
+        }
+
+        .progress-bar-fill { 
+            height: 100%; 
+            background: var(--accent-blue); 
+            border-radius: 20px; 
+        }
+
+        @media (max-width: 1024px) {
+            nav { width: 80px; }
+            .logo, .nav-link span, .logout-btn, .btn-create span { display: none; }
+            main { margin-left: 80px; padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <nav>
+            <div class="logo">Nexo</div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a>
+                <a href="myclasses.html" class="nav-link"><i class="fas fa-layer-group"></i> <span>My Classes</span></a>
+                <div class="nav-link btn-create" onclick="createNewClass()"><i class="fas fa-plus-circle"></i> <span>Create New Class</span></div>
+                <a href="studentlist.html" class="nav-link"><i class="fas fa-user-graduate"></i> <span>Students</span></a>
+                <a href="grading.html" class="nav-link"><i class="fas fa-check-double"></i> <span>Grading</span></a>
+                <a href="settingteacher.html" class="nav-link"><i class="fas fa-cog"></i> <span>Settings</span></a>
+            </div>
+            <a href="homepage.html" class="logout-btn">Logout</a>
+        </nav>
+    </aside>
+
+    <button id="theme-toggle" class="theme-icon-btn" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span>
+    </button>
+
+    <main>
+        <header>
+            <h1 class="greeting-bold">Hello, Professor! 👋</h1>
+            <p class="sub-text">Ready to lead your students today?</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card"><h3>Classes Taught</h3><p>5</p></div>
+            <div class="stat-card"><h3>Active Tasks</h3><p>18</p></div>
+            <div class="stat-card"><h3>Total Students</h3><p>112</p></div>
+        </div>
+
+        <h2 style="margin-bottom: 1.8rem; font-weight: 800;">Active Course Management</h2>
+        
+        <div class="course-grid">
+            <div class="course-card">
+                <div class="card-banner" style="background: linear-gradient(135deg, #3b82f6, #2563eb);"></div>
+                <div class="card-content">
+                    <h4 style="font-weight:800; margin-bottom:5px;">Calculus & Analytical Geometry</h4>
+                    <span style="color:var(--text-muted); font-size:0.9rem;">Mathematics • Class 12-A</span>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 76%"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </main>
+
+    <script>
+        /* ── Theme Logic (Exactly matching your Student Dashboard) ── */
+        function savePref(key, value) {
+            const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+            prefs[key] = value;
+            localStorage.setItem('nexoPrefs', JSON.stringify(prefs));
+        }
+
+        function getPref(key, fallback) {
+            const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+            return prefs[key] !== undefined ? prefs[key] : fallback;
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+            savePref('darkMode', isDark);
+        }
+
+        // Apply theme on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const darkMode = getPref('darkMode', false);
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-icon').textContent = '☀️';
+            }
+        });
+
+        function createNewClass() {
+            window.location.href = "createnewclass.html";   
+        }
+    </script>
+</body>
+</html>
