@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nexo | Login</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #1d63ff;
+            --hover-blue: #1652d1;
+            --bg-page: #f8faff;
+            --bg-card: #ffffff;
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            --border: #e5e7eb;
+            --toggle-group: #f1f5f9;
+            --nav-bg: rgba(10, 9, 9, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --toggle-group: #334155;
+            --nav-bg: rgba(15, 23, 42, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 8%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+        }
+
+        .theme-switch {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: var(--toggle-group);
+            border: 2px solid var(--border);
+            color: var(--text-main);
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: center;
+            padding: 60px 5%;
+            gap: 60px;
+        }
+
+        .slogan-section {
+            flex: 1;
+        }
+
+        .slogan-section h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 25px;
+            background: linear-gradient(90deg, var(--primary-blue), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slogan-section p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .form-section {
+            flex: 1;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            padding: 45px;
+            border-radius: 30px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+            border: 1px solid var(--border);
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-main);
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 800;
+        }
+
+        .role-toggle {
+            display: flex;
+            background: var(--toggle-group);
+            padding: 6px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .role-toggle input {
+            display: none;
+        }
+
+        .role-toggle label {
+            flex: 1;
+            padding: 14px;
+            cursor: pointer;
+            z-index: 1;
+            font-weight: 900;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            height: calc(100% - 12px);
+            width: calc(50% - 6px);
+            background: var(--primary-blue);
+            border-radius: 12px;
+            top: 6px;
+            left: 6px;
+            transition: 0.3s;
+        }
+
+        #teacher:checked ~ .toggle-slider {
+            transform: translateX(100%);
+        }
+
+        #student:checked ~ label[for="student"],
+        #teacher:checked ~ label[for="teacher"] {
+            color: white;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 900;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .divider::before {
+            margin-right: 1em;
+        }
+
+        .divider::after {
+            margin-left: 1em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px;
+            background: var(--toggle-group);
+            border: 2px solid transparent;
+            border-radius: 14px;
+            outline: none;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .forgot-pass {
+            display: block;
+            text-align: right;
+            margin-bottom: 25px;
+            color: var(--primary-blue);
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .btn-login,
+        .btn-whatsapp,
+        .btn-verify-otp {
+            width: 100%;
+            padding: 18px;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .btn-login {
+            background: var(--primary-blue);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+        }
+
+        .btn-verify-otp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .demo-buttons button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .student-demo {
+            background: linear-gradient(135deg,#2563eb,#3b82f6);
+        }
+
+        .teacher-demo {
+            background: linear-gradient(135deg,#7c3aed,#a855f7);
+        }
+
+        .footer-link {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .footer-link a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 800;
+        }
+
+        @media(max-width:1024px){
+            .main-wrapper{
+                flex-direction: column;
+            }
+
+            .slogan-section{
+                text-align:center;
+            }
+
+            .slogan-section h1{
+                font-size:3rem;
+            }
+        }
+    </style>
+</head>
+
+<body data-theme="light">
+
+<nav>
+    <a href="#" class="logo-container">
+        <div class="logo-icon">
+            📘
+        </div>
+        <span class="logo-text">Nexo</span>
+    </a>
+
+    <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">
+        <span>🌙</span>
+        <span id="themeLabel">Dark</span>
+    </button>
+</nav>
+
+<div class="main-wrapper">
+
+    <div class="slogan-section">
+        <h1>Welcome Back,<br>Ready to Learn?</h1>
+        <p>
+            Access your dashboard, continue courses, manage classes and experience low-bandwidth smart learning.
+        </p>
+    </div>
+
+    <div class="form-section">
+        <div class="login-card">
+
+            <div class="social-grid">
+                <button class="btn-social">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+                    Google
+                </button>
+
+                <button class="btn-social">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" width="20">
+                    Microsoft
+                </button>
+            </div>
+
+            <div class="role-toggle">
+                <input type="radio" name="role" id="student" checked>
+                <label for="student">🎓 Student</label>
+
+                <input type="radio" name="role" id="teacher">
+                <label for="teacher">👨‍🏫 Teacher</label>
+
+                <div class="toggle-slider"></div>
+            </div>
+
+            <div class="divider">Email Login</div>
+
+            <form id="loginForm">
+
+                <div class="input-group">
+                    <label>Email / Username</label>
+                    <input type="text" placeholder="Enter username" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter password" required>
+                </div>
+
+                <a href="#" class="forgot-pass">Forgot Password?</a>
+
+                <button type="submit" class="btn-login">
+                    Login
+                </button>
+
+            </form>
+
+            <div class="divider">WhatsApp OTP</div>
+
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" placeholder="+91 9876543210">
+            </div>
+
+            <button class="btn-whatsapp" onclick="sendOTP()">
+                📱 Send OTP via WhatsApp
+            </button>
+
+            <div class="input-group">
+                <label>Enter OTP</label>
+                <input type="text" id="otp" placeholder="Enter OTP">
+            </div>
+
+            <button class="btn-verify-otp" onclick="verifyOTP()">
+                ✅ Verify & Login
+            </button>
+
+            <div class="divider">Demo Access</div>
+
+            <div class="demo-buttons">
+                <button class="student-demo" onclick="demoLogin('student')">
+                    🎓 Demo Student
+                </button>
+
+                <button class="teacher-demo" onclick="demoLogin('teacher')">
+                    👨‍🏫 Demo Teacher
+                </button>
+            </div>
+
+            <div class="footer-link">
+                Don't have an account?
+                <a href="signuppage.html">Sign Up</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function toggleTheme() {
+        const body = document.body;
+        const label = document.getElementById('themeLabel');
+        const icon = document.querySelector('.theme-switch span:first-child');
+
+        const isDark = body.getAttribute('data-theme') === 'dark';
+
+        if (isDark) {
+            body.setAttribute('data-theme', 'light');
+            label.innerText = 'Dark';
+            icon.innerText = '🌙';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            label.innerText = 'Light';
+            icon.innerText = '☀️';
+        }
+    }
+
+    // ===== NORMAL LOGIN =====
+
+    document.getElementById('loginForm').onsubmit = async (e) => {
+
+        e.preventDefault();
+
+        const username = e.target.querySelector('input[type="text"]').value;
+        const password = e.target.querySelector('input[type="password"]').value;
+
+        const role =
+            document.querySelector('input[name="role"]:checked').id;
+
+        try {
+
+            const response = await fetch('http://localhost:3000/login', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    username,
+                    password,
+                    role
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+
+                localStorage.setItem('token', result.token);
+                localStorage.setItem('role', result.role);
+
+                if (result.role === 'teacher') {
+
+                    window.location.href = "dashboardteacher.html";
+
+                } else {
+
+                    window.location.href = "dashboard.html";
+                }
+
+            } else {
+
+                alert(result.error || "Login failed");
+            }
+
+        } catch (err) {
+
+            alert("Backend server not running.");
+        }
+    };
+
+    // ===== WHATSAPP OTP =====
+
+    async function sendOTP() {
+
+        const phone = document.getElementById("phone").value;
+
+        try {
+
+            const res = await fetch("http://localhost:3000/send-otp", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    phone
+                })
+            });
+
+            const data = await res.json();
+
+            alert(data.message || data.error);
+
+        } catch (err) {
+
+            alert("OTP server error.");
+        }
+    }
+
+    async function verifyOTP() {
+
+        const phone = document.getElementById("phone").value;
+
+        const otp = document.getElementById("otp").value;
+
+        try {
+
+            const res = await fetch("http://localhost:3000/verify-otp", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    phone,
+                    otp
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.token) {
+
+                localStorage.setItem('token', data.token);
+
+                localStorage.setItem(
+                    'role',
+                    data.role || 'student'
+                );
+
+                alert("Login successful!");
+
+                if ((data.role || 'student') === 'teacher') {
+
+                    window.location.href =
+                        "dashboardteacher.html";
+
+                } else {
+
+                    window.location.href =
+                        "dashboard.html";
+                }
+
+            } else {
+
+                alert(data.error || "Invalid OTP");
+            }
+
+        } catch (err) {
+
+            alert("Verification failed.");
+        }
+    }
+
+    // ===== DEMO LOGIN =====
+
+    function demoLogin(role) {
+
+        localStorage.setItem('token', 'demo-token');
+
+        localStorage.setItem('role', role);
+
+        if (role === 'teacher') {
+
+            window.location.href =
+                "dashboardteacher.html";
+
+        } else {
+
+            window.location.href =
+                "dashboard.html";
+        }
+    }
+
+</script>
+
+</body>
+</html>
