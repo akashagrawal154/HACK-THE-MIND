@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteLearn | Grading Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8faff;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent-blue: #2563eb;
+            --border: #e2e8f0;
+            --input-bg: #f1f5f9;
+            --table-hover: rgba(37, 99, 235, 0.03);
+            --shadow-sidebar: 4px 0 15px rgba(0, 0, 0, 0.03);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        /* ── Unified Dark Mode Logic ── */
+        body.dark-mode {
+            --bg-body: #0b0f1a;
+            --bg-sidebar: #151b2c;
+            --bg-card: #1e2539;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --accent-blue: #3b82f6;
+            --border: #2d364d;
+            --input-bg: #151b2c;
+            --table-hover: rgba(59, 130, 246, 0.05);
+            --shadow-sidebar: 4px 0 20px rgba(0, 0, 0, 0.2);
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.25s ease, color 0.25s ease; }
+        body { background-color: var(--bg-body); color: var(--text-main); display: flex; min-height: 100vh; }
+
+        /* SIDEBAR */
+        nav { 
+            width: 280px; 
+            background: var(--bg-sidebar); 
+            box-shadow: var(--shadow-sidebar);
+            padding: 2.5rem 1.2rem; 
+            display: flex; 
+            flex-direction: column; 
+            position: fixed; 
+            height: 100vh; 
+            z-index: 1000;
+        }
+
+        .logo { 
+            color: var(--accent-blue); 
+            font-weight: 800; 
+            font-size: 1.8rem; 
+            margin-bottom: 2.5rem; 
+            padding-left: 0.8rem; 
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { flex-grow: 1; }
+
+        .nav-link { 
+            padding: 0.9rem 1.2rem; 
+            text-decoration: none; 
+            color: var(--text-muted); 
+            border-radius: 12px; 
+            margin-bottom: 0.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            font-weight: 600; 
+            font-size: 0.95rem;
+        }
+
+        .nav-link.active { 
+            background: var(--accent-blue); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .nav-link:hover:not(.active):not(.btn-create) { background: var(--bg-body); color: var(--accent-blue); }
+
+        .btn-create { 
+            margin: 1.5rem 0; 
+            border: 2px dashed var(--border); 
+            color: var(--accent-blue) !important; 
+            justify-content: center; 
+            cursor: pointer; 
+            background: transparent;
+        }
+
+        .logout-btn { 
+            background: #fee2e2; 
+            color: #ef4444; 
+            text-align: center; 
+            padding: 0.9rem; 
+            border-radius: 12px; 
+            text-decoration: none; 
+            font-weight: 700; 
+            margin-top: auto; 
+        }
+        body.dark-mode .logout-btn { background: rgba(239, 68, 68, 0.15); }
+
+        /* Unified Theme Toggle Styling */
+        .theme-icon-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            z-index: 1100;
+            box-shadow: var(--shadow);
+            outline: none;
+        }
+
+        /* MAIN CONTENT */
+        main { flex: 1; margin-left: 280px; padding: 2.5rem 3.5rem; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
+        
+        .search-bar { 
+            background: var(--bg-card); border: 1px solid var(--border); padding: 12px 20px; 
+            border-radius: 14px; width: 350px; display: flex; align-items: center; gap: 12px; margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        .search-bar input { border: none; outline: none; background: transparent; color: var(--text-main); font-weight: 600; width: 100%; }
+
+        .grading-container { background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
+        .table-scroll { max-height: 60vh; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { position: sticky; top: 0; background: var(--bg-card); padding: 1.2rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; z-index: 10; border-bottom: 1px solid var(--border); }
+        td { padding: 1.1rem 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        tr:hover { background: var(--table-hover); }
+
+        .grade-input { 
+            width: 70px; padding: 8px; border-radius: 8px; border: 1px solid var(--border); 
+            text-align: center; font-weight: 700; background: var(--input-bg); color: var(--text-main);
+            outline: none;
+        }
+        .grade-input:focus { border-color: var(--accent-blue); }
+
+        .badge { padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 0.75rem; display: inline-block; min-width: 45px; text-align: center; }
+        .badge-a { background: #dcfce7; color: #166534; }
+        .badge-b { background: #dbeafe; color: #1e40af; }
+        .badge-f { background: #fee2e2; color: #991b1b; }
+
+        .btn-sync { background: var(--accent-blue); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .btn-sync:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Nexo</div>
+        <div class="nav-links">
+            <a href="dashboardteacher.html" class="nav-link"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a>
+            <a href="myclasses.html" class="nav-link"><i class="fas fa-layer-group"></i> <span>My Classes</span></a>
+            <div class="nav-link btn-create" onclick="createNewClass()">
+                <i class="fas fa-plus-circle"></i> <span>Create New Class</span>
+            </div>
+            <a href="studentlist.html" class="nav-link"><i class="fas fa-user-check"></i> <span>Students</span></a>
+            <a href="grading.html" class="nav-link active"><i class="fas fa-check-double"></i> <span>Grading</span></a>
+            <a href="settingteacher.html" class="nav-link"><i class="fas fa-cog"></i> <span>Settings</span></a>
+        </div>
+        <a href="homepage.html" class="logout-btn">Logout</a>
+    </nav>
+
+    <button id="theme-toggle" class="theme-icon-btn" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span>
+    </button>
+
+    <main>
+        <header>
+            <div>
+                <h1 style="font-weight: 850; font-size: 2.2rem; letter-spacing: -1.5px;">Student Grading</h1>
+                <p style="color: var(--text-muted); font-weight: 600;">Mathematics • Grade 10-C</p>
+            </div>
+            <button class="btn-sync" onclick="alert('Data synced to portal!')">
+                <i class="fas fa-cloud-upload-alt"></i> Sync Portal
+            </button>
+        </header>
+
+        <div class="search-bar">
+            <i class="fas fa-search" style="color: var(--text-muted);"></i>
+            <input type="text" id="studentSearch" placeholder="Search student name..." onkeyup="filterStudents()">
+        </div>
+
+        <div class="grading-container">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roll</th>
+                            <th>Student Name</th>
+                            <th>Theory (80)</th>
+                            <th>Prac (20)</th>
+                            <th>Int (10)</th>
+                            <th>Total %</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradingBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const fNames = ["Aarav", "Aryan", "Ishaan", "Ananya", "Saanvi", "Priya", "Kabir", "Meera", "Rohan", "Kavya"];
+        const lNames = ["Sharma", "Verma", "Singh", "Patel", "Gupta", "Nair", "Reddy", "Iyer"];
+        let students = [];
+
+        function init() {
+            for (let i = 1; i <= 112; i++) {
+                students.push({
+                    id: i,
+                    name: fNames[Math.floor(Math.random()*fNames.length)] + " " + lNames[Math.floor(Math.random()*lNames.length)],
+                    t: Math.floor(Math.random()*30) + 50,
+                    p: Math.floor(Math.random()*5) + 15,
+                    i: Math.floor(Math.random()*4) + 6
+                });
+            }
+            render(students);
+        }
+
+        function getGrade(pct) {
+            if (pct >= 90) return { l: 'A1', c: 'badge-a' };
+            if (pct >= 75) return { l: 'B1', c: 'badge-b' };
+            return { l: 'C', c: 'badge-f' };
+        }
+
+        function render(data) {
+            const tbody = document.getElementById('gradingBody');
+            tbody.innerHTML = '';
+            data.forEach(s => {
+                const total = (((s.t + s.p + s.i) / 110) * 100).toFixed(1);
+                const grade = getGrade(total);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="color: var(--text-muted);">#${String(s.id).padStart(3, '0')}</td>
+                    <td style="font-weight: 700;">${s.name}</td>
+                    <td><input type="number" class="grade-input" value="${s.t}" oninput="update(${s.id}, 't', this.value)"></td>
+                    <td><input type="number" class="grade-input" value="${s.p}" oninput="update(${s.id}, 'p', this.value)"></td>
+                    <td><input type="number" class="grade-input" value="${s.i}" oninput="update(${s.id}, 'i', this.value)"></td>
+                    <td style="font-weight: 800; color: var(--accent-blue);">${total}%</td>
+                    <td><span class="badge ${grade.c}">${grade.l}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function update(id, field, val) {
+            const s = students.find(x => x.id === id);
+            s[field] = parseInt(val) || 0;
+            render(students.filter(s => s.name.toLowerCase().includes(document.getElementById('studentSearch').value.toLowerCase())));
+        }
+
+        function filterStudents() {
+            const q = document.getElementById('studentSearch').value.toLowerCase();
+            render(students.filter(s => s.name.toLowerCase().includes(q)));
+        }
+
+        function createNewClass() {
+            window.location.href = "createnewclass.html";   
+        }
+
+        /* ── Unified Theme Script ── */
+        function savePref(key, value) {
+            const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+            prefs[key] = value;
+            localStorage.setItem('nexoPrefs', JSON.stringify(prefs));
+        }
+
+        function getPref(key, fallback) {
+            const prefs = JSON.parse(localStorage.getItem('nexoPrefs') || '{}');
+            return prefs[key] !== undefined ? prefs[key] : fallback;
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+            savePref('darkMode', isDark);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const darkMode = getPref('darkMode', false);
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-icon').textContent = '☀️';
+            }
+            init();
+        });
+    </script>
+</body>
+</html>
